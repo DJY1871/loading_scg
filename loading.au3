@@ -15,12 +15,14 @@ EndIf
 
 WinWait($windowTitle,"",20)
 
-#cs
+
 ;Creat a Warning GUI
 $hGUI = GUICreate("Warning", 300, 100, -1, -1, $WS_POPUPWINDOW, $WS_EX_TOPMOST + $WS_EX_TOOLWINDOW)
 GUISetState(@SW_SHOW)
 GUICtrlCreateLabel("Automation Script is running now, please don't move!!!", 10, 40, 280, 20)
-#ce
+
+Sleep(2000)
+GUIDelete()
 
 If WinExists("[CLASS:#32770; TITLE:Tip of the Day]") Then
     ControlClick("Tip of the Day", "", "[CLASS:Button; INSTANCE:4]")
