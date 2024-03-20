@@ -17,4 +17,4 @@ if WinExists($windowtitle) Then
 	ControlSend($windowtitle,"","","{F6}")
 	Sleep(1000)
 	$configWindowTitle = "Program and Configure"
-	
+EndIf

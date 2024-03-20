@@ -164,6 +164,7 @@ If WinExists($windowTitle) Then
     CloseAppWindows($windowTitle)
 Else
     ConsoleWrite("Can't find " & $windowTitle & "window"& @CRLF)
+    CloseAppWindows($windowTitle)
     Exit
 EndIf
 
