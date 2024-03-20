@@ -73,7 +73,6 @@ If WinExists($windowTitle) Then
         $description = StringRegExpReplace($visibleText, "(?s).*Description:\s*([^\r\n]*).*", "\1")
         $productcode = StringRegExpReplace($visibleText, "(?s).*Product Code:\s*([^\r\n]*).*", "\1")
         ;Write property in console
-        ConsoleWrite("Serial Number: " & $serialNumber & @CRLF)
         ConsoleWrite("Battery Status: " & $batteryStatus & @CRLF)
         ConsoleWrite("Description: " & $description & @CRLF)
         ConsoleWrite("Product Code: " & $productcode & @CRLF)
