@@ -67,12 +67,12 @@ If WinExists($windowTitle) Then
     If $visibleText <> "" Then
         ;Parse the property string
         $serialNumber = StringRegExpReplace($visibleText, "(?s).*Serial Number:\s*([^\r\n]*).*", "\1")
-        ConsoleWrite("Serial Number: " & $serialNumber & @CRLF)
-        
         $batteryStatus = StringRegExpReplace($visibleText, "(?s).*Battery Status:\s*([^\r\n]*).*", "\1")
         $description = StringRegExpReplace($visibleText, "(?s).*Description:\s*([^\r\n]*).*", "\1")
         $productcode = StringRegExpReplace($visibleText, "(?s).*Product Code:\s*([^\r\n]*).*", "\1")
+
         ;Write property in console
+        ConsoleWrite("Serial Number: " & $serialNumber & @CRLF)
         ConsoleWrite("Battery Status: " & $batteryStatus & @CRLF)
         ConsoleWrite("Description: " & $description & @CRLF)
         ConsoleWrite("Product Code: " & $productcode & @CRLF)
