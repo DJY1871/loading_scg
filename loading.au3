@@ -12,9 +12,8 @@ If  Not WinExists($windowTitle) Then
 		Exit
     EndIf
 EndIf
-
-WinWait($windowTitle,"",20)
-
+;WinWait($windowTitle,"",20)
+WinSetState(WinWait($windowTitle,"",20), "", @SW_HIDE)
 
 ;Creat a Warning GUI
 $hGUI = GUICreate("Warning", 300, 100, -1, -1, $WS_POPUPWINDOW, $WS_EX_TOPMOST + $WS_EX_TOOLWINDOW)
@@ -37,18 +36,19 @@ If WinExists($windowTitle) Then
     ControlSend($windowTitle, "", "", "{F7}")
     Sleep(1000)
     $downloadWindowTitle = "Download Readings"
-    WinWait($downloadWindowTitle, "", 10)
-
+    ;WinWait($downloadWindowTitle, "", 10)
+	WinSetState(WinWait($downloadWindowTitle, "", 10), "", @SW_HIDE)
     if WinExists($downloadWindowTitle) Then
         ControlClick($downloadWindowTitle, "", "[CLASS:Button; INSTANCE:1]")
         ;call properties window
         Local $i = 1
-        While $i <= 20
+        While $i <= 10
             Sleep(500)
             ControlClick($downloadWindowTitle,"","CLASS:AfxWnd70s; INSTANCE:1]")
             ControlSend($downloadWindowTitle, "", "", "{ENTER}")
             Sleep(500)
             If WinExists("ESCORT iLog/Qualaire Properties") Then
+				WinSetState(WinExists("ESCORT iLog/Qualaire Properties"), "", @SW_HIDE)
                 ExitLoop
             EndIf
             $i += 1
