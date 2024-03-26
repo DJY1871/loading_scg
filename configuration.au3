@@ -19,12 +19,16 @@ $hGUI = GUICreate("Warning", 300, 100, -1, -1, $WS_POPUPWINDOW, $WS_EX_TOPMOST +
 GUISetState(@SW_SHOW)
 GUICtrlCreateLabel("Automation Script is running now, please don't move!!!", 10, 40, 280, 20)
 
+Sleep(2000)
+GUIDelete()
+
+If WinExists("[CLASS:#32770; TITLE:Tip of the Day]") Then
+    ControlClick("Tip of the Day", "", "[CLASS:Button; INSTANCE:4]")
+EndIf
+
 If WinExists("[CLASS:#32770; TITLE:ESCORT Console]") Then
     ControlClick("ESCORT Console", "", "[CLASS:Button; INSTANCE:2]")
 EndIf
-
-Sleep(2000)
-GUIDelete()
 
 if WinExists($windowTitle) Then
 	ControlSend($windowTitle,"","","{F6}")
@@ -33,10 +37,13 @@ if WinExists($windowTitle) Then
 	WinWait($configWindowTitle,"",10)
 	if WinExists($configWindowTitle) Then
         ControlClick($configWindowTitle, "", "[CLASS:Button; INSTANCE:1]")
+        Sleep(200)
         ;call properties window
         Local $i = 1
         While $i <= 10
-            Sleep(500)
+            Sleep(300)
+            WinSetOnTop($configWindowTitle,"", 1)
+            Sleep(200)
             Local $hListView = ControlGetHandle($configWindowTitle, "", "[CLASS:SysListView32]")
 			_GUICtrlListView_ClickItem($hListView, 0)
 			_GUICtrlListView_ClickItem($hListView, 0)
@@ -71,7 +78,15 @@ if WinExists($windowTitle) Then
         ConsoleWrite("Description: " & $description & @CRLF)
         ConsoleWrite("Product Code: " & $productcode & @CRLF)
         ; MsgBox(0, "Status", "Serial Number: " & $serialNumber & " Battery Status: " & $batteryStatus)
-        ControlSend($propertiesWindowTitle, "", "", "{ENTER}")
+        for $i  = 1 to 10
+            ControlClick($propertiesWindowTitle,"","[CLASS:Button; INSTANCE:1]")
+            if WinExists($propertiesWindowTitle) = 0 Then
+                ExitLoop
+            EndIf
+        Next
+        if WinExists($propertiesWindowTitle) Then
+            ConsoleWrite("Can't close " & $propertiesWindowTitle & " window")
+        EndIf
     Else
         ConsoleWrite("Error: Unable to find the window or read text from it." & @CRLF)
         ConsoleWrite("Please check Battery,COM connect,Sensor connect." & @CRLF)
@@ -86,7 +101,7 @@ if WinExists($windowTitle) Then
         Sleep(500)
         $description = $cmdline[1]
         if $description <> "def" Then
-            ControlSend($configWindowTitle,"","[CLASS:Edit; INSTANCE:1]",$description)
+            ControlSetText($configWindowTitle,"","[CLASS:Edit; INSTANCE:1]",$description)
         EndIf
         ;click next to sensor display
         ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:1]")
@@ -109,32 +124,48 @@ if WinExists($windowTitle) Then
             $mintemper = $cmdline[2]
             $maxtemper = $cmdline[3]
             $increment = $cmdline[4]
-            ControlSend($configsnesor,"","[CLASS:Edit; INSTANCE:2]",$mintemper)
-            ControlSend($configsnesor,"","[CLASS:Edit; INSTANCE:3]",$maxtemper)
-            ControlSend($configsnesor,"","[CLASS:Edit; INSTANCE:3]",$increment)
-            ControlClick($configsnesor,"",$buttonid)
+            if $mintemper <> "def" Then
+                ControlSetText($configsnesor,"", "[CLASS:Edit; INSTANCE:2]", $mintemper)
+                Sleep(200)
+                ControlSetText($configsnesor,"", "[CLASS:Edit; INSTANCE:3]", $maxtemper)
+                Sleep(200)
+                ControlSetText($configsnesor,"", "[CLASS:Edit; INSTANCE:4]", $increment)
+                Sleep(200)
+            EndIf
             ControlClick($configsnesor,"",$buttonid)
             Sleep(500)
             ;set alarm
-            For $i = 5 To 11
-                If $cmdline[$i] = "T" Then
-                    ControlClick($configsnesor, "", "[CLASS:Button; INSTANCE:" & $i & "]")
-                    Sleep(200)
+            if $cmdline[5] <> "def" Then
+                For $i = 5 To 11
+                    If $cmdline[$i] = "T" Then
+                        ControlClick($configsnesor, "", "[CLASS:Button; INSTANCE:" & $i & "]")
+                        Sleep(200)
+                    EndIf
+                Next
+                ControlClick($configsnesor, "","[CLASS:Button; INSTANCE:7]")
+                ControlSend($configsnesor,"","[CLASS:Edit; INSTANCE:1]",$cmdline[12])
+                ControlSend($configsnesor,"","[CLASS:Edit; INSTANCE:2]",$cmdline[13])
+            EndIf
+            ;exit configsensor window
+            for $i = 1 to 10
+                ControlClick($configsnesor,"",$buttonid)
+                Sleep(200)
+                if WinExists($configsnesor) = 0 Then
+                    ExitLoop
                 EndIf
             Next
-            If $cmdline[7] = "T" Then
-                ControlClick($configsnesor, "", "[CLASS:Button; INSTANCE:7]")
+            Sleep(500)
+            if WinExists($configsnesor) Then
+                ConsoleWrite("Can't close " & $configsnesor & " window")
+                CloseAppWindows($windowTitle)
+                Exit
             EndIf
-            ControlSend($configsnesor,"","[CLASS:Edit; INSTANCE:1]",$cmdline[12])
-            ControlSend($configsnesor,"","[CLASS:Edit; INSTANCE:2]",$cmdline[13])
-            ;exit coknfigsensor window
-            ControlClick($configsnesor,"",$buttonid)
-            ControlClick($configsnesor,"",$buttonid)
         Else
             ConsoleWrite("Can't find " & $configsnesor & "window"& @CRLF)
             CloseAppWindows($windowTitle)
         EndIf
     Else
+        ConsoleWrite("Can't find " & $configWindowTitle & "window"& @CRLF)
         CloseAppWindows($windowTitle)
         Exit
     EndIf
@@ -149,7 +180,7 @@ if WinExists($windowTitle) Then
         ControlCommand($configWindowTitle,"",5244,"SelectString",$cmdline[14])
         Sleep(50)
         ;set reading interval days
-        ControlSend($configWindowTitle,"","[CLASS:Edit; INSTANCE:1]",$cmdline[15])
+        ControlSetText($configWindowTitle,"","[CLASS:Edit; INSTANCE:1]",$cmdline[15])
         Sleep(50)
         ;set reading interval hr min sec
         ControlSend($configWindowTitle,"",5223,$cmdline[16])
@@ -158,17 +189,20 @@ if WinExists($windowTitle) Then
         Switch  $cmdline[17]
             ;set wait hr min
             Case 1
+                ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:6]")
                 ControlSend($configWindowTitle,"",5227,$cmdline[18])
                 Sleep(50)
             ;set in time day hr min
             Case 2
-                ControlSend($configWindowTitle,"",5229,$cmdline[19])
+                ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:7]")
+                ControlSetText($configWindowTitle,"",5229,$cmdline[19])
                 Sleep(50)
-                ControlSend($configWindowTitle,"",5230,$cmdline[20])
+                ControlSend($configWindowTitle,"",5231,$cmdline[20])
                 Sleep(50)
             ;set log at precise time
             Case 3
                 $day = $cmdline[21]
+                ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:8]")
                 If StringInStr($day, "上") Then
                     ControlSend($configWindowTitle,"",5232,$day)
                     For $i = 1 To 2
@@ -192,17 +226,22 @@ if WinExists($windowTitle) Then
         Switch  $cmdline[22]
             ;set after reading time
             Case 1
-                ControlSend($configWindowTitle,"",5237,$cmdline[21])
+                ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:9]")
+                Sleep(50)
+                ControlSetText($configWindowTitle,"",5237,$cmdline[23])
                 Sleep(50)
             ;set after day hr/min
             Case 2
-                ControlSend($configWindowTitle,"",5239,$cmdline[22])
+                ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:10]")
                 Sleep(50)
-                ControlSend($configWindowTitle,"",5241,$cmdline[23])
+                ControlSend($configWindowTitle,"",5239,$cmdline[24])
+                Sleep(50)
+                ControlSend($configWindowTitle,"",5241,$cmdline[25])
                 Sleep(50)
             ;set log at precise time
             Case 3
-                $day = $cmdline[24]
+                $day = $cmdline[26]
+                ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:11]")
                 If StringInStr($day, "上") Then
                     ControlSend($configWindowTitle,"",5242,$day)
                     For $i = 1 To 2
@@ -230,18 +269,31 @@ if WinExists($windowTitle) Then
     EndIf
 
     ;enable beeper in logger
-    If $cmdline[25] = "F" Then ControlClick($configWindowTitle,"",5243)
-    If $cmdline[26] = "T" Then ControlClick($configWindowTitle,"",5245)
+    If $cmdline[27] = "F" Then 
+        ControlClick($configWindowTitle,"",5243)
+        Sleep(50)
+    EndIf
+    ;battary fitted
+    If $cmdline[28] = "T" Then 
+        ControlClick($configWindowTitle,"",5245)
+        Sleep(50)
+    EndIf
 
     ;programing
     If WinExists($configWindowTitle) Then
-        ControlClick($configWindowTitle,"",$buttonid)
-        ControlClick($configWindowTitle,"",$buttonid)
+        for $i = 1 to 200
+            Sleep(500)
+            ControlClick($configWindowTitle,"",$buttonid)
+            if WinExists($configWindowTitle) = 0 Then
+                ExitLoop
+            EndIf
+        Next
     Else
         ConsoleWrite("Can't find " & $windowTitle & "window"& @CRLF)
         CloseAppWindows($windowTitle)
         Exit
     EndIf
+    Sleep(500)
     CloseAppWindows($windowTitle)
 Else
 	ConsoleWrite("Can't find " & $windowTitle & "window"& @CRLF)
@@ -265,10 +317,10 @@ EndFunc
 #cs 
     configuration.exe
     description
-    mintemper
+    mintemper                       不變的話第一個改def
     maxtemper
     increment
-    AlChoose*7 EX~ T F T F T T T
+    AlChoose*7 EX~ T F T F T T T    不變的話第一個改def
     Aloutofspec1
     Aloutofspec2
     Duration
@@ -284,7 +336,9 @@ EndFunc
     after days
     after hr min EX~ 23h4m
     at time EX~ "2045/3/4 上 2h3m23s"
-    continuous to log EX~ "T"
     enable beep EX~ "T
     new battery fitted EX~ "T
 #ce
+;                  1            5         10        15                 20                                  25                               29
+;configuration.exe def 0 60 6 def F F F F F F 0 0 U 0 00h00m06s 2 00h00m 0 00h01m "2000/2/2 上 2h3m23s" 1 10 0 00h02m "2045/3/4 上 2h3m23s" T F
+;"C:\Program Files (x86)\AutoIt3\Aut2Exe\Aut2exe_x64.exe" /In "configuration.au3" /x64 /console
