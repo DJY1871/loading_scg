@@ -135,16 +135,18 @@ if WinExists($windowTitle) Then
             ControlClick($configsnesor,"",$buttonid)
             Sleep(500)
             ;set alarm
-            if $cmdline[5] <> "def" Then
+            local $Alchose[8]
+            $Alchose = StringSplit($cmdline[5]," ")
+            if $Alchose[1] <> "def" Then
                 For $i = 5 To 11
-                    If $cmdline[$i] = "T" Then
+                    If $Alchose[$i - 4] = "T" Then
                         ControlClick($configsnesor, "", "[CLASS:Button; INSTANCE:" & $i & "]")
                         Sleep(200)
                     EndIf
                 Next
                 ControlClick($configsnesor, "","[CLASS:Button; INSTANCE:7]")
-                ControlSend($configsnesor,"","[CLASS:Edit; INSTANCE:1]",$cmdline[12])
-                ControlSend($configsnesor,"","[CLASS:Edit; INSTANCE:2]",$cmdline[13])
+                ControlSend($configsnesor,"","[CLASS:Edit; INSTANCE:1]",$cmdline[6])
+                ControlSend($configsnesor,"","[CLASS:Edit; INSTANCE:2]",$cmdline[7])
             EndIf
             ;exit configsensor window
             for $i = 1 to 10
@@ -177,31 +179,39 @@ if WinExists($windowTitle) Then
     ;set sampling time
     If WinExists($configWindowTitle) Then
         ;Duration time
-        ControlCommand($configWindowTitle,"",5244,"SelectString",$cmdline[14])
+        ControlCommand($configWindowTitle,"",5244,"SelectString",$cmdline[8])
         Sleep(50)
         ;set reading interval days
-        ControlSetText($configWindowTitle,"","[CLASS:Edit; INSTANCE:1]",$cmdline[15])
+        Local $readinterval[2]
+        $temp = StringReplace($cmdline[9],"days"," ")
+        $readinterval = StringSplit($temp," ")
+        ControlSend($configWindowTitle,"",5221,$readinterval[1])
         Sleep(50)
-        ;set reading interval hr min sec
-        ControlSend($configWindowTitle,"",5223,$cmdline[16])
+        ControlSend($configWindowTitle,"",5223,$readinterval[2])
         Sleep(50)
         ;start log time
-        Switch  $cmdline[17]
+        Switch  $cmdline[10]
             ;set wait hr min
             Case 1
                 ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:6]")
-                ControlSend($configWindowTitle,"",5227,$cmdline[18])
+                Sleep(50)
+                ControlSend($configWindowTitle,"",5227,$cmdline[11])
                 Sleep(50)
             ;set in time day hr min
             Case 2
+                ;devide xxdaysxxhxxm
+                Local $starttime[2]
+                $temp = StringReplace($cmdline[11],"days"," ")
+                $starttime = StringSplit($temp," ")
                 ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:7]")
-                ControlSetText($configWindowTitle,"",5229,$cmdline[19])
                 Sleep(50)
-                ControlSend($configWindowTitle,"",5231,$cmdline[20])
+                ControlSetText($configWindowTitle,"",5229,$starttime[1])
+                Sleep(50)
+                ControlSend($configWindowTitle,"",5231,$starttime[2])
                 Sleep(50)
             ;set log at precise time
             Case 3
-                $day = $cmdline[21]
+                $day = $cmdline[11]
                 ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:8]")
                 If StringInStr($day, "上") Then
                     ControlSend($configWindowTitle,"",5232,$day)
@@ -223,24 +233,28 @@ if WinExists($windowTitle) Then
         EndSwitch
 
         ;finish log time
-        Switch  $cmdline[22]
+        Switch  $cmdline[12]
             ;set after reading time
             Case 1
                 ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:9]")
                 Sleep(50)
-                ControlSetText($configWindowTitle,"",5237,$cmdline[23])
+                ControlSetText($configWindowTitle,"",5237,$cmdline[13])
                 Sleep(50)
             ;set after day hr/min
             Case 2
+                ;devide xxdaysxxhxxm
+                Local $aftertime[2]
+                $temp = StringReplace($cmdline[13],"days"," ")
+                $aftertime = StringSplit($temp," ")
                 ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:10]")
                 Sleep(50)
-                ControlSend($configWindowTitle,"",5239,$cmdline[24])
+                ControlSend($configWindowTitle,"",5239,$aftertime[1])
                 Sleep(50)
-                ControlSend($configWindowTitle,"",5241,$cmdline[25])
+                ControlSend($configWindowTitle,"",5241,$aftertime[2])
                 Sleep(50)
             ;set log at precise time
             Case 3
-                $day = $cmdline[26]
+                $day = $cmdline[13]
                 ControlClick($configWindowTitle,"","[CLASS:Button; INSTANCE:11]")
                 If StringInStr($day, "上") Then
                     ControlSend($configWindowTitle,"",5242,$day)
@@ -269,12 +283,12 @@ if WinExists($windowTitle) Then
     EndIf
 
     ;enable beeper in logger
-    If $cmdline[27] = "F" Then 
+    If $cmdline[14] = "F" Then 
         ControlClick($configWindowTitle,"",5243)
         Sleep(50)
     EndIf
     ;battary fitted
-    If $cmdline[28] = "T" Then 
+    If $cmdline[15] = "T" Then 
         ControlClick($configWindowTitle,"",5245)
         Sleep(50)
     EndIf
@@ -316,29 +330,21 @@ EndFunc
 ;how to use exe cmdline
 #cs 
     configuration.exe
-    description
-    mintemper                       不變的話第一個改def
-    maxtemper
-    increment
-    AlChoose*7 EX~ T F T F T T T    不變的話第一個改def
-    Aloutofspec1
-    Aloutofspec2
-    Duration
-    readintervalday
-    read interval hr min sec  EX~ 14h32m52s
-    startlogchoose EX~ 1
-    wait time hr min EX~ 2h23m
-    in days
-    in hr min EX~ 23h4m
-    at time EX~ "2045/3/4 上 2h3m23s"
-    finishlogchoose
-    after ... reading
-    after days
-    after hr min EX~ 23h4m
-    at time EX~ "2045/3/4 上 2h3m23s"
-    enable beep EX~ "T
-    new battery fitted EX~ "T
+    1.description
+    2.mintemper                       不變的話第一個改def
+    3.maxtemper
+    4.increment
+    5.AlChoose EX~ "T F T F T T T"    不變的話第一個改def
+    6.Aloutofspec1
+    7.Aloutofspec2
+    8.Duration
+    9.readinterval    EX~ 03days10h21m06s 
+    10.startlogchoose EX~ 1
+    11.starttime      EX~ 03h02m    or  03days10h21m    or  "2045/3/4 上 2h3m23s"
+    12.finishlogchoose EX~ 3
+    13.aftertime      EX~ 10   or  03days10h21m    or  "2045/3/4 上 2h3m23s"
+    14.enable beep EX~ "T
+    15.new battery fitted EX~ "T
 #ce
-;                  1            5         10        15                 20                                  25                               29
-;configuration.exe def 0 60 6 def F F F F F F 0 0 U 0 00h00m06s 2 00h00m 0 00h01m "2000/2/2 上 2h3m23s" 1 10 0 00h02m "2045/3/4 上 2h3m23s" T F
+;EX~ configuration.exe def -20 70 5 "def" 0 0 U "00days00h00m06s" 2 "00days00h01m" 1 10 T F
 ;"C:\Program Files (x86)\AutoIt3\Aut2Exe\Aut2exe_x64.exe" /In "configuration.au3" /x64 /console
