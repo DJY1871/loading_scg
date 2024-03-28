@@ -36,7 +36,9 @@ if WinExists($windowTitle) Then
 	$configWindowTitle = "Program and Configure"
 	WinWait($configWindowTitle,"",10)
 	if WinExists($configWindowTitle) Then
-        ControlClick($configWindowTitle, "", "[CLASS:Button; INSTANCE:1]")
+        If ControlCommand($configWindowTitle, "", 1004, "IsEnabled", "") Then
+            ControlClick($configWindowTitle, "", "[CLASS:Button; INSTANCE:1]")
+        EndIf
         Sleep(200)
         ;call properties window
         Local $allWindowTitles = WinList()
@@ -44,9 +46,9 @@ if WinExists($windowTitle) Then
         Local $aWindows = WinList() ; 获取所有窗口列表
         For $i = 1 To $aWindows[0][0] ; 遍历窗口列表
             If Not StringInStr($aWindows[$i][0], $configWindowTitle) Then ; 如果窗口标题不包含特定字符串
-                WinSetOnTop($aWindows[$i][0], "", 0)
+                WinSetOnTop($aWindows[$i][0], "", $WINDOWS_NOONTOP)
             Else
-                WinSetOnTop($configWindowTitle, "", 1)
+                WinSetOnTop($configWindowTitle, "", $WINDOWS_ONTOP)
             EndIf
         Next
         $i = 1

@@ -37,7 +37,9 @@ If WinExists($windowTitle) Then
     $downloadWindowTitle = "Download Readings"
     ;WinWait($downloadWindowTitle, "", 10)
     if WinExists($downloadWindowTitle) Then
-        ControlClick($downloadWindowTitle, "", "[CLASS:Button; INSTANCE:1]")
+        If ControlCommand($downloadWindowTitle, "", "[CLASS:Button; INSTANCE:1]", "IsEnabled", "") Then
+            ControlClick($downloadWindowTitle, "", "[CLASS:Button; INSTANCE:1]")
+        EndIf
         ;call properties window
         Local $i = 1
         While $i <= 20
