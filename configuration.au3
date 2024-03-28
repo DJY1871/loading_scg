@@ -42,7 +42,7 @@ if WinExists($windowTitle) Then
         Local $allWindowTitles = WinList()
         For $i = 1 To $allWindowTitles[0][0]
             Local $windowTitle1 = $allWindowTitles[$i][0]
-            If Not _ArraySearch($configWindowTitle, $allWindowTitles) Then
+            If Not StringInStr(WinGetTitle($allWindowTitles[$i][1]), $configWindowTitle) Then
                 WinSetState($windowTitle1, "", @SW_HIDE)
             EndIf
         Next
@@ -57,7 +57,7 @@ if WinExists($windowTitle) Then
             If WinExists("ESCORT iLog/Qualaire Properties") Then
 				For $i = 1 To $allWindowTitles[0][0]
                     Local $windowTitle1 = $allWindowTitles[$i][0]
-                    If Not _ArraySearch($configWindowTitle, $allWindowTitles) Then
+                    If Not StringInStr(WinGetTitle($allWindowTitles[$i][1]), $configWindowTitle) Then
                         WinSetState($windowTitle1, "", @SW_SHOW)
                     EndIf
                 Next

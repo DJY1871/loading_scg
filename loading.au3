@@ -40,7 +40,7 @@ If WinExists($windowTitle) Then
         ControlClick($downloadWindowTitle, "", "[CLASS:Button; INSTANCE:1]")
         ;call properties window
         Local $i = 1
-        While $i <= 10
+        While $i <= 20
             Sleep(500)
             ControlClick($downloadWindowTitle,"","CLASS:AfxWnd70s; INSTANCE:1]")
             ControlSend($downloadWindowTitle, "", "", "{ENTER}")
@@ -85,6 +85,7 @@ If WinExists($windowTitle) Then
     ;go to download page
     If WinExists($downloadWindowTitle) Then
         $controlID = 1004
+        Sleep(1000)
         If ControlCommand($downloadWindowTitle, "", $controlID, "IsEnabled", "") Then
             
             $buttonText = ControlGetText($downloadWindowTitle, "", $controlID)
