@@ -40,13 +40,16 @@ if WinExists($windowTitle) Then
         Sleep(200)
         ;call properties window
         Local $allWindowTitles = WinList()
-        For $i = 1 To $allWindowTitles[0][0]
-            Local $windowTitle1 = $allWindowTitles[$i][0]
-            If Not StringInStr(WinGetTitle($allWindowTitles[$i][1]), $configWindowTitle) Then
-                WinSetState($windowTitle1, "", @SW_HIDE)
+        Local $i = 1
+        Local $aWindows = WinList() ; 获取所有窗口列表
+        For $i = 1 To $aWindows[0][0] ; 遍历窗口列表
+            If Not StringInStr($aWindows[$i][0], $configWindowTitle) Then ; 如果窗口标题不包含特定字符串
+                WinSetOnTop($aWindows[$i][0], "", 0)
+            Else
+                WinSetOnTop($configWindowTitle, "", 1)
             EndIf
         Next
-        Local $i = 1
+        $i = 1
         While $i <= 10
             Sleep(300)
             Sleep(200)
@@ -55,12 +58,6 @@ if WinExists($windowTitle) Then
 			_GUICtrlListView_ClickItem($hListView, 0)
             Sleep(500)
             If WinExists("ESCORT iLog/Qualaire Properties") Then
-				For $i = 1 To $allWindowTitles[0][0]
-                    Local $windowTitle1 = $allWindowTitles[$i][0]
-                    If Not StringInStr(WinGetTitle($allWindowTitles[$i][1]), $configWindowTitle) Then
-                        WinSetState($windowTitle1, "", @SW_SHOW)
-                    EndIf
-                Next
                 ExitLoop
             EndIf
             $i += 1
@@ -105,6 +102,10 @@ if WinExists($windowTitle) Then
 		Exit
     EndIf
 
+    if $description <> $cmdline[16] Then
+        ConsoleWrite("description not fit")
+        Exit
+    EndIf
     ;set description
     IF WinExists($configWindowTitle) Then
         ;click next to details
@@ -361,6 +362,7 @@ EndFunc
     13.aftertime      EX~ 10   or  03days10h21m    or  "2045/3/4 上 03:22"
     14.enable beep EX~ "T
     15.new battery fitted EX~ "T
+    16.old_description
 #ce
-;EX~ configuration.exe def -20 70 5 "T F T F T T T" 0 0 U "00days00h00m06s" 2 "00days00h01m" 1 10 T F
+;EX~ configuration.exe def -20 70 5 "T F T F T T T" 0 0 U "00days00h00m06s" 2 "00days00h01m" 1 10 T F 39-78
 ;"C:\Program Files (x86)\AutoIt3\Aut2Exe\Aut2exe_x64.exe" /In "configuration.au3" /x64 /console
