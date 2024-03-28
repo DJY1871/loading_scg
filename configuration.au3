@@ -39,17 +39,28 @@ if WinExists($windowTitle) Then
         ControlClick($configWindowTitle, "", "[CLASS:Button; INSTANCE:1]")
         Sleep(200)
         ;call properties window
+        Local $allWindowTitles = WinList()
+        For $i = 1 To $allWindowTitles[0][0]
+            Local $windowTitle1 = $allWindowTitles[$i][0]
+            If Not _ArraySearch($configWindowTitle, $allWindowTitles) Then
+                WinSetState($windowTitle1, "", @SW_HIDE)
+            EndIf
+        Next
         Local $i = 1
         While $i <= 10
             Sleep(300)
-            WinSetOnTop($configWindowTitle,"", 1)
             Sleep(200)
             Local $hListView = ControlGetHandle($configWindowTitle, "", "[CLASS:SysListView32]")
 			_GUICtrlListView_ClickItem($hListView, 0)
 			_GUICtrlListView_ClickItem($hListView, 0)
             Sleep(500)
             If WinExists("ESCORT iLog/Qualaire Properties") Then
-				WinSetState(WinExists("ESCORT iLog/Qualaire Properties"), "", @SW_HIDE)
+				For $i = 1 To $allWindowTitles[0][0]
+                    Local $windowTitle1 = $allWindowTitles[$i][0]
+                    If Not _ArraySearch($configWindowTitle, $allWindowTitles) Then
+                        WinSetState($windowTitle1, "", @SW_SHOW)
+                    EndIf
+                Next
                 ExitLoop
             EndIf
             $i += 1
@@ -116,7 +127,12 @@ if WinExists($windowTitle) Then
     $buttonid = 1004
     $configsnesor = "Configure Sensor"
     If WinExists($configWindowTitle) Then
-        ControlClick($configWindowTitle,"",5182)
+        for $i = 1 to 5
+            ControlClick($configWindowTitle,"",5182)
+            If WinExists($configsnesor) Then
+                ExitLoop
+            EndIf
+        Next
         If WinExists($configsnesor) Then
             ControlClick($configsnesor,"",$buttonid)
             Sleep(500)
@@ -340,9 +356,9 @@ EndFunc
     8.Duration
     9.readinterval    EX~ 03days10h21m06s 
     10.startlogchoose EX~ 1
-    11.starttime      EX~ 03h02m    or  03days10h21m    or  "2045/3/4 上 2h3m23s"
+    11.starttime      EX~ 03h02m    or  03days10h21m    or  "2045/3/4 上 03:22"
     12.finishlogchoose EX~ 3
-    13.aftertime      EX~ 10   or  03days10h21m    or  "2045/3/4 上 2h3m23s"
+    13.aftertime      EX~ 10   or  03days10h21m    or  "2045/3/4 上 03:22"
     14.enable beep EX~ "T
     15.new battery fitted EX~ "T
 #ce

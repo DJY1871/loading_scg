@@ -13,7 +13,6 @@ If  Not WinExists($windowTitle) Then
     EndIf
 EndIf
 ;WinWait($windowTitle,"",20)
-WinSetState(WinWait($windowTitle,"",20), "", @SW_HIDE)
 
 ;Creat a Warning GUI
 $hGUI = GUICreate("Warning", 300, 100, -1, -1, $WS_POPUPWINDOW, $WS_EX_TOPMOST + $WS_EX_TOOLWINDOW)
@@ -37,7 +36,6 @@ If WinExists($windowTitle) Then
     Sleep(1000)
     $downloadWindowTitle = "Download Readings"
     ;WinWait($downloadWindowTitle, "", 10)
-	WinSetState(WinWait($downloadWindowTitle, "", 10), "", @SW_HIDE)
     if WinExists($downloadWindowTitle) Then
         ControlClick($downloadWindowTitle, "", "[CLASS:Button; INSTANCE:1]")
         ;call properties window
@@ -48,7 +46,6 @@ If WinExists($windowTitle) Then
             ControlSend($downloadWindowTitle, "", "", "{ENTER}")
             Sleep(500)
             If WinExists("ESCORT iLog/Qualaire Properties") Then
-				WinSetState(WinExists("ESCORT iLog/Qualaire Properties"), "", @SW_HIDE)
                 ExitLoop
             EndIf
             $i += 1
@@ -179,3 +176,5 @@ Func CloseAppWindows($appWindowTitle)
         EndIf
     Next
 EndFunc
+
+;"C:\Program Files (x86)\AutoIt3\Aut2Exe\Aut2exe_x64.exe" /In "loading.au3" /x64 /console
