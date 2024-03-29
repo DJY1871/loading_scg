@@ -105,7 +105,7 @@ if WinExists($windowTitle) Then
     EndIf
 
     if $description <> $cmdline[16] Then
-        ConsoleWrite("description not fit" & @CRLF)
+        ConsoleWrite("description not fit old is " & $cmdline[16] & ",new is " & $description & @CRLF)
         CloseAppWindows($windowTitle)
         Exit
     EndIf
