@@ -76,7 +76,11 @@ If WinExists($windowTitle) Then
         ConsoleWrite("Description: " & $description & @CRLF)
         ConsoleWrite("Product Code: " & $productcode & @CRLF)
         ; MsgBox(0, "Status", "Serial Number: " & $serialNumber & " Battery Status: " & $batteryStatus)
-        ControlSend($propertiesWindowTitle, "", "", "{ENTER}")
+        for $i = 1 to 10
+            ControlSend($propertiesWindowTitle, "", "", "{ENTER}")
+            if Not WinExists($propertiesWindowTitle) Then ExitLoop
+            Sleep(500)
+        Next
     Else
         ConsoleWrite("Error: Unable to find the window or read text from it." & @CRLF)
         ConsoleWrite("Please check Battery,COM connect,Sensor connect." & @CRLF)

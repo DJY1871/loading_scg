@@ -13,6 +13,7 @@ If  Not WinExists($windowTitle) Then
     EndIf
 EndIf
 WinWait($windowTitle, "", 15)
+WinSetState($windowTitle,"",@SW_MINIMIZE)
 
 ;Creat a Warning GUI
 $hGUI = GUICreate("Warning", 300, 100, -1, -1, $WS_POPUPWINDOW, $WS_EX_TOPMOST + $WS_EX_TOOLWINDOW)
@@ -31,6 +32,11 @@ If WinExists("[CLASS:#32770; TITLE:ESCORT Console]") Then
 EndIf
 
 if WinExists($windowTitle) Then
+    ;maxsize window and lock 
+    WinSetState($windowTitle,"",@SW_MAXIMIZE)
+    WinSetState($windowTitle,"",@SW_LOCK)
+    Sleep(200)
+    ;open configwindow
 	ControlSend($windowTitle,"","","{F6}")
 	Sleep(1000)
 	$configWindowTitle = "Program and Configure"
@@ -38,23 +44,14 @@ if WinExists($windowTitle) Then
 	if WinExists($configWindowTitle) Then
         If ControlCommand($configWindowTitle, "", 1004, "IsEnabled", "") Then
             ControlClick($configWindowTitle, "", "[CLASS:Button; INSTANCE:1]")
+            Sleep(200)
         EndIf
-        Sleep(200)
         ;call properties window
-        Local $allWindowTitles = WinList()
         Local $i = 1
-        Local $aWindows = WinList() ; 获取所有窗口列表
-        For $i = 1 To $aWindows[0][0] ; 遍历窗口列表
-            If Not StringInStr($aWindows[$i][0], $configWindowTitle) Then ; 如果窗口标题不包含特定字符串
-                WinSetOnTop($aWindows[$i][0], "", $WINDOWS_NOONTOP)
-            Else
-                WinSetOnTop($configWindowTitle, "", $WINDOWS_ONTOP)
-            EndIf
-        Next
-        $i = 1
         While $i <= 10
             Sleep(300)
             Sleep(200)
+            ;double click list view
             Local $hListView = ControlGetHandle($configWindowTitle, "", "[CLASS:SysListView32]")
 			_GUICtrlListView_ClickItem($hListView, 0)
 			_GUICtrlListView_ClickItem($hListView, 0)
@@ -64,6 +61,9 @@ if WinExists($windowTitle) Then
             EndIf
             $i += 1
         WEnd
+        ;unlock window exit maxsize
+        WinSetState($windowTitle,"",@SW_UNLOCK)
+        WinSetState($windowTitle,"",@SW_RESTORE)
     Else
         ConsoleWrite("Can't find " & $configWindowTitle & " window"& @CRLF)
         CloseAppWindows($windowTitle)
@@ -89,7 +89,7 @@ if WinExists($windowTitle) Then
         ConsoleWrite("Product Code: " & $productcode & @CRLF)
         ; MsgBox(0, "Status", "Serial Number: " & $serialNumber & " Battery Status: " & $batteryStatus)
         for $i  = 1 to 10
-            ControlClick($propertiesWindowTitle,"","[CLASS:Button; INSTANCE:1]")
+            ControlClick($propertiesWindowTitle,"OK",1)
             if WinExists($propertiesWindowTitle) = 0 Then
                 ExitLoop
             EndIf
