@@ -157,7 +157,7 @@ if WinExists($windowTitle) Then
             Sleep(500)
             ;set alarm
             local $Alchose[8]
-            $Alchose = StringSplit($cmdline[5]," ")
+            $Alchose = StringSplit($cmdline[5],",")
             if $Alchose[1] <> "def" Then
                 For $i = 5 To 11
                     If $Alchose[$i - 4] = "T" Then
