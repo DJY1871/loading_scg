@@ -157,7 +157,7 @@ if WinExists($windowTitle) Then
             Sleep(500)
             ;set alarm
             local $Alchose[8]
-            $Alchose = StringSplit($cmdline[5],",")
+            $Alchose = StringSplit($cmdline[5],"_")
             if $Alchose[1] <> "def" Then
                 For $i = 5 To 11
                     If $Alchose[$i - 4] = "T" Then
@@ -374,5 +374,5 @@ EndFunc
     15.new battery fitted EX~ "T
     16.old_description
 #ce
-;EX~ configuration.exe def -20 70 5 F,F,F,F,F,F,F 0 0 U 00days00h00m06s 2 00days00h01m 1 10 T F 39-78
+;EX~ configuration.exe def -20 70 5 F_F_F_F_F_F_F 0 0 U 00days00h00m06s 2 00days00h01m 1 10 T F 39-78
 ;"C:\Program Files (x86)\AutoIt3\Aut2Exe\Aut2exe_x64.exe" /In "configuration.au3" /x64 /console
