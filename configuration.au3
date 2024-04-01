@@ -52,6 +52,7 @@ if WinExists($windowTitle) Then
             Sleep(300)
             Sleep(200)
             ;double click list view
+            HotKeySet("{Esc}","hotkeyuse")
             Local $hListView = ControlGetHandle($configWindowTitle, "", "[CLASS:SysListView32]")
 			_GUICtrlListView_ClickItem($hListView, 0)
 			_GUICtrlListView_ClickItem($hListView, 0)
@@ -345,6 +346,12 @@ Func CloseAppWindows($appWindowTitle)
             WinClose($aWinList[$i][1])
         EndIf
     Next
+EndFunc
+
+Func hotkeyuse()
+    ConsoleWrite("Exit searching window" & @CRLF)
+    CloseAppWindows($windowTitle)
+    Exit
 EndFunc
 
 ;how to use exe cmdline

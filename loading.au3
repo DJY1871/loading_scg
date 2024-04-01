@@ -44,6 +44,7 @@ If WinExists($windowTitle) Then
         Local $i = 1
         While $i <= 20
             Sleep(500)
+            HotKeySet("{Esc}","hotkeyuse")
             ControlClick($downloadWindowTitle,"","CLASS:AfxWnd70s; INSTANCE:1]")
             ControlSend($downloadWindowTitle, "", "", "{ENTER}")
             Sleep(500)
@@ -182,6 +183,12 @@ Func CloseAppWindows($appWindowTitle)
             WinClose($aWinList[$i][1])
         EndIf
     Next
+EndFunc
+
+Func hotkeyuse()
+    ConsoleWrite("Exit searching window" & @CRLF)
+    CloseAppWindows($windowTitle)
+    Exit
 EndFunc
 
 ;"C:\Program Files (x86)\AutoIt3\Aut2Exe\Aut2exe_x64.exe" /In "loading.au3" /x64 /console
