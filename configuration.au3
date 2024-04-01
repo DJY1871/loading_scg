@@ -374,5 +374,5 @@ EndFunc
     15.new battery fitted EX~ "T
     16.old_description
 #ce
-;EX~ configuration.exe def -20 70 5 "F F F F F F F" 0 0 U "00days00h00m06s" 2 "00days00h01m" 1 10 T F 39-78
+;EX~ configuration.exe def -20 70 5 F,F,F,F,F,F,F 0 0 U 00days00h00m06s 2 00days00h01m 1 10 T F 39-78
 ;"C:\Program Files (x86)\AutoIt3\Aut2Exe\Aut2exe_x64.exe" /In "configuration.au3" /x64 /console
