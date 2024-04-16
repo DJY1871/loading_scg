@@ -48,4 +48,5 @@
   * Product Code
 * 異常狀態回報說明: 同上
 ## 注意事項
-當腳本在搜尋Sensor時預設是超過10秒未找到會自動跳脫， 如果突然提前關閉頁面可能會有異常，建議如果要跳脫可以使用熱鍵ESC。
+* 當腳本在搜尋Sensor時預設是超過10秒未找到會自動跳脫， 如果突然提前關閉頁面可能會有異常，建議如果要跳脫可以使用熱鍵ESC。
+* 當要將.au3轉成.exe時需要再控制台使用此指令EX~ "C:\Program Files (x86)\AutoIt3\Aut2Exe\Aut2exe_x64.exe" /In "XXX.au3" /x64 /console
