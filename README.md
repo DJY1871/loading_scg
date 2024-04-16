@@ -36,7 +36,7 @@
    * 16.old_description
 * 不更動cmdline寫法
   * description輸入de則f維持原值
-  * mintemper輸入def，2,3,4維持原值
+  * mintemper輸入def，2,3,4維持原值，3,4須補0
   * AlChoose輸入def則維持原值
 * EX~ configuration.exe def -20 70 5 F_F_F_F_F_F_F 0 0 U 00days00h00m06s 2 00days00h01m 1 10 T F 39-78
 ### Get Property Script
@@ -48,5 +48,5 @@
   * Product Code
 * 異常狀態回報說明: 同上
 ## 注意事項
-* 當腳本在搜尋Sensor時預設是超過10秒未找到會自動跳脫， 如果突然提前關閉頁面可能會有異常，建議如果要跳脫可以使用熱鍵ESC。
+* 當腳本在搜尋Sensor時預設是超過10秒未找到會自動跳脫， 如果突然提前關閉頁面可能會有異常，建議如果要跳脫可以使用熱鍵ESC或直接停止腳本。
 * 當要將.au3轉成.exe時需要再控制台使用此指令EX~ "C:\Program Files (x86)\AutoIt3\Aut2Exe\Aut2exe_x64.exe" /In "XXX.au3" /x64 /console
